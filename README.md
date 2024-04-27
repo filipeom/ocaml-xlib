@@ -1,28 +1,34 @@
-============= SUMMARY %
+SUMMARY
+=============
 
 OCaml bindings for the Xlib library.
 
-============= ATTRIBUTION %
+ATTRIBUTION
+=============
 
 Copyright (C) 2008, 2009, 2010, 2020 Florent Monnier
 Contact: <monnier.florent()gmail.com>
 
-============= LICENSE %
+LICENSE
+=============
 
 This library is released under the terms of the MIT license,
 described in file LICENSE.txt
 
-============= ALTERNATIVE LICENSES %
+ALTERNATIVE LICENSES
+=============
 
 If it is more convenient for you, you can also use this code
 under the terms of any of these licenses:
 - CC0, any kind of BSD license, WTFPL, ISC or zlib/libpng
 
-============= HOMEPAGE %
+HOMEPAGE
+=============
 
 http://decapode314.free.fr/ocaml/Xlib/
 
-============= DESCRIPTION %
+DESCRIPTION
+=============
 
 OCaml-Xlib is a work in progress Xlib bindings for OCaml.
 
@@ -38,7 +44,8 @@ strings or the bigarrays with its module Raw.
 
 Though the examples use glMLite.
 
-============= INSTALL %
+INSTALL
+=============
 
 To install `make install` will only install the Xlib module.
 `make install_all` will install all the Xlib, GLX and Xt modules.
@@ -48,22 +55,26 @@ The default prefix is `ocamlc -where`/Xlib
 you can change the destination install dir with:
 `make install PREFIX=/some/path`
 
-============= OPAM %
+OPAM
+=============
 
 You can install this code repository with Opam, with the command:
 
 opam install .
 
-============= DOCUMENTATION %
+DOCUMENTATION
+=============
 
 Get the HTML ocamldoc generated documentation with the command:
 `make doc`
 
-============= EXAMPLES %
+EXAMPLES
+=============
 
 For examples of use, run the *.sh scripts.
 
-============= EXTENSIONS %
+EXTENSIONS
+=============
 
 There is a module for the GLX extension texture_from_pixmap:
  https://www.khronos.org/registry/OpenGL/extensions/EXT/GLX_EXT_texture_from_pixmap.txt
@@ -72,13 +83,15 @@ To build and install, run:
 `make glx_p2t`
 `make install_glx_p2t`
 
-============= TODO %
+TODO
+=============
 
 XKB
 On my computer the demo texture_from_pixmap.ml runs right in
 interpreted mode, but segfaults in native mode.
 
-============= FRIEND PROJECTS %
+FRIEND PROJECTS
+=============
 
 There are 2 other projects related to X programming in OCaml.
 ___
@@ -103,10 +116,11 @@ which contains basic bindings to the C Xlib, find it here:
   http://pauillac.inria.fr/%7Eddr/olibrt/
 It is released under the BSD license.
 
-============= CONTRIBUTORS %
+CONTRIBUTORS
+=============
 
 Arlen Cuss, 2011-01-28: fix for the function xFetchName.
- 
+
 Alex Muscar <muscar(_)gmail.com>, 2012-01-01:
 - provided a patch to add the function ml_XCreateWindowEvent_datas()
   and the type xCreateWindowEvent_contents
@@ -116,5 +130,3 @@ Tim Cuthbertson <tim()gfxmonk.net>, 2015-12-28:
 - XGetWindowProperty
 - xLastKnownRequestProcessed
 - XGetInputFocus
-
-============= EOF %
