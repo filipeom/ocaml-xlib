@@ -3,4 +3,5 @@
  (name xlib)
  (foreign_stubs
   (language c)
-  (names wrap_xlib)))
+  (names wrap_xlib))
+ (c_library_flags :standard -lX11))
