@@ -44,7 +44,7 @@
 
 // }}}
 
-#include "wrap_xlib.h"
+#include "xlib.h"
 
 // {{{ caml allocs
 

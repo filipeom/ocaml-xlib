@@ -1,6 +1,6 @@
 (lang dune 3.10)
 
-(name xlib)
+(name x11)
 
 (generate_opam_files true)
 
@@ -16,40 +16,10 @@
 (license "MIT")
 
 (package
- (name xlib)
- (synopsis "Bindings to the Xlib library")
- (description "OCaml bindings to the Xlib library.")
+ (name x11)
+ (synopsis "Bindings for the X11 library")
+ (description "OCaml bindings to the X11 library.")
  (depends
   dune
   ocaml
   conf-libX11))
-
-(package
- (allow_empty)
- (name keysym)
- (synopsis "Todo")
- (description "Todo")
- (depends
-  dune
-  ocaml
-  xlib))
-
-(package
- (allow_empty)
- (name keysym_match)
- (synopsis "Todo")
- (description "Todo")
- (depends
-  dune
-  ocaml
-  xlib))
-
-(package
- (allow_empty)
- (name GLX)
- (synopsis "Todo")
- (description "Todo")
- (depends
-  dune
-  ocaml
-  xlib))

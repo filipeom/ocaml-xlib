@@ -1,0 +1,7 @@
+(library
+ (public_name x11.xt)
+ (name xt)
+ (foreign_stubs
+  (language c)
+  (names xt))
+ (libraries x11.xlib))
