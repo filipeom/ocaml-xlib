@@ -1,0 +1,6 @@
+(library
+ (public_name xlib)
+ (name xlib)
+ (foreign_stubs
+  (language c)
+  (names wrap_xlib)))
