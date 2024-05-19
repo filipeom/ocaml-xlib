@@ -64,7 +64,7 @@ let open_display ?name () =
   in
   xOpenDisplay ~name
 
-external xCloseDisplay : dpy:display -> unit = "ml_XCloseDisplay"
+external xCloseDisplay : display -> unit = "ml_XCloseDisplay"
 external xFlush : dpy:display -> unit = "ml_XFlush"
 external xBell : dpy:display -> percent:int -> unit = "ml_XBell"
 

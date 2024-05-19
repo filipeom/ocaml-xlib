@@ -119,7 +119,7 @@ let () =
         | _ -> ())
     | KeyPress ->
         (* exit on any key press *)
-        xCloseDisplay ~dpy;
+        xCloseDisplay dpy;
         exit 0
     | ConfigureNotify -> ()
     | _ -> ()

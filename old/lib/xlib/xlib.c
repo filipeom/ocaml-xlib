@@ -120,15 +120,18 @@ custom_ops_n(XChar2b);
 #define Display_of_GC(gc_pair) (Field((gc_pair), 1))
 
 void Finalize_GC(value gc) {
+  CAMLparam1(gc);
   value dpy = Display_of_GC(gc);
   if (display_is_open(dpy)) {
     GET_STATUS XFreeGC(Display_val(dpy), GC_val(gc));
     CHECK_STATUS(XFreeGC, 1);
   }
+  CAMLreturn0;
 }
 CAMLprim value do_finalize_GC(value gc) {
+  CAMLparam1(gc);
   Finalize_GC(gc);
-  return Val_unit;
+  CAMLreturn(Val_unit);
 }
 
 /*
@@ -181,6 +184,7 @@ static const long event_mask_table[] = {
 };
 
 static inline long Eventmask_val(value em_list) {
+  CAMLparam1(em_list);
   long event_mask = 0;
   while (em_list != Val_emptylist) {
     value head = Field(em_list, 0);
@@ -188,21 +192,7 @@ static inline long Eventmask_val(value em_list) {
     event_mask |= mask;
     em_list = Field(em_list, 1);
   }
-  return event_mask;
-}
-
-static inline value Focus_state_val(value mode) {
-  switch
-    Int_val(mode) {
-    case 0:
-      return RevertToParent;
-    case 1:
-      return RevertToPointerRoot;
-    case 2:
-      return RevertToNone;
-    default:
-      caml_failwith("Unknown focus state value");
-    }
+  CAMLreturnT(long, event_mask);
 }
 
 // }}}
@@ -353,51 +343,61 @@ int ErrorHandler_closure(Display *dpy, XErrorEvent *event) {
   CAMLlocal1(ml_event);
   static value *closure_f = NULL;
   if (closure_f == NULL) {
-    closure_f = caml_named_value("Error Handler Callback");
+    closure_f = (value *)caml_named_value("Error Handler Callback");
   }
   copy_XEvent(event, ml_event);
   caml_callback2(*closure_f, Val_Display(dpy), ml_event);
   CAMLreturn(0);
 }
 CAMLprim value ml_XSetErrorHandler(value unit) {
+  CAMLparam1(unit);
   XSetErrorHandler(ErrorHandler_closure);
-  return Val_unit;
+  CAMLreturn(Val_unit);
 }
 
 CAMLprim value ml_XlibSpecificationRelease(value unit) {
-  return Val_int(XlibSpecificationRelease);
+  CAMLparam1(unit);
+  CAMLreturn(Val_int(XlibSpecificationRelease));
 }
 
 CAMLprim value ml_XOpenDisplay(value display_name) {
-  Display *dpy;
-  dpy = XOpenDisplay(String_val(display_name));
+  CAMLparam1(display_name);
+  CAMLlocal1(ml_dpy);
+  Display *dpy = XOpenDisplay(String_val(display_name));
   if (dpy == NULL) {
     caml_failwith("Cannot open display");
   }
-  return Val_Display(dpy);
+  ml_dpy = caml_alloc(2, 0);
+  Store_field(ml_dpy, 0, ((value)(dpy)));
+  Store_field(ml_dpy, 1, Val_true);
+  CAMLreturn(ml_dpy);
 }
 
 CAMLprim value ml_XCloseDisplay(value dpy) {
+  CAMLparam1(dpy);
   XCloseDisplay(Display_val(dpy));
   display_record_closed(dpy);
-  return Val_unit;
+  CAMLreturn(Val_unit);
 }
 
 CAMLprim value ml_XFlush(value dpy) {
+  CAMLparam1(dpy);
   GET_STATUS XFlush(Display_val(dpy));
   CHECK_STATUS(XFlush, 1);
-  return Val_unit;
+  CAMLreturn(Val_unit);
 }
 
 CAMLprim value ml_XBell(value dpy, value percent) {
+  CAMLparam2(dpy, percent);
   // GET_STATUS
   XBell(Display_val(dpy), Int_val(percent));
   // CHECK_STATUS(XBell,1);
-  return Val_unit;
+  CAMLreturn(Val_unit);
 }
 
 CAMLprim value ml_LastKnownRequestProcessed(value dpy) {
-  return Val_long(LastKnownRequestProcessed(dpy));
+  CAMLparam1(dpy);
+  CAMLreturn(Val_long(LastKnownRequestProcessed(dpy)));
 }
 
 static const int close_mode_table[] = {
@@ -408,37 +408,46 @@ static const int close_mode_table[] = {
 #define Close_mode_val(i) (close_mode_table[Long_val(i)])
 
 CAMLprim value ml_XSetCloseDownMode(value dpy, value close_mode) {
+  CAMLparam2(dpy, close_mode);
   // GET_STATUS
   XSetCloseDownMode(Display_val(dpy), Close_mode_val(close_mode));
   // CHECK_STATUS(XSetCloseDownMode,1);
-  return Val_unit;
+  CAMLreturn(Val_unit);
 }
 
 CAMLprim value ml_XSync(value dpy, value discard) {
+  CAMLparam2(dpy, discard);
   // GET_STATUS
   XSync(Display_val(dpy), Bool_val(discard));
   // CHECK_STATUS(XSync,1);
-  return Val_unit;
+  CAMLreturn(Val_unit);
 }
 
 CAMLprim value ml_XGrabServer(value dpy) {
+  CAMLparam1(dpy);
   // GET_STATUS
   XGrabServer(Display_val(dpy));
   // CHECK_STATUS(XGrabServer,1);
-  return Val_unit;
+  CAMLreturn(Val_unit);
 }
 
 static inline value Val_focus_state(int state) {
+  CAMLparam0();
+  int focus = -1;
   switch (state) {
   case RevertToParent:
-    return Val_int(0);
+    focus = 0;
+    break;
   case RevertToPointerRoot:
-    return Val_int(1);
+    focus = 1;
+    break;
   case RevertToNone:
-    return Val_int(2);
+    focues = 2;
+    break;
   default:
     caml_failwith("unhandled focus state");
   }
+  CAMLreturn(Val_int(focus));
 }
 
 CAMLprim value ml_XGetInputFocus(value dpy) {
@@ -454,10 +463,11 @@ CAMLprim value ml_XGetInputFocus(value dpy) {
 }
 
 CAMLprim value ml_XUngrabServer(value dpy) {
+  CAMLparam1(dpy);
   // GET_STATUS
   XUngrabServer(Display_val(dpy));
   // CHECK_STATUS(XUngrabServer,1);
-  return Val_unit;
+  CAMLreturn(Val_unit);
 }
 
 CAMLprim value ml_XUngrabPointer(value dpy, value time) {
@@ -488,7 +498,8 @@ CAMLprim value ml_XScreenCount(value dpy) {
 }
 
 CAMLprim value ml_XDefaultRootWindow(value dpy) {
-  return Val_Window(_xDefaultRootWindow(Display_val(dpy)));
+  CAMLparam1(dpy);
+  CAMLreturn(Val_Window(_xDefaultRootWindow(Display_val(dpy))));
 }
 
 CAMLprim value ml_XDefaultVisual(value dpy, value screen_number) {
@@ -1022,7 +1033,8 @@ WATTR_SET(unsigned long, border_pixel, CWBorderPixel, Pixel_color_val, uint)
 WATTR_SET(int, bit_gravity, CWBitGravity, Int_val, int)
 WATTR_SET(int, win_gravity, CWWinGravity, Int_val, int)
 WATTR_SET(int, backing_store, CWBackingStore, Int_val, int)
-WATTR_SET(unsigned long, backing_planes, CWBackingPlanes, ULong_val, uint) // XXX
+WATTR_SET(unsigned long, backing_planes, CWBackingPlanes, ULong_val,
+          uint) // XXX
 WATTR_SET(unsigned long, backing_pixel, CWBackingPixel, ULong_val,
           uint) // pixel_color?
 WATTR_SET(Bool, save_under, CWSaveUnder, Bool_val, bool)
@@ -1192,9 +1204,10 @@ CAMLprim value ml_XRaiseWindow(value dpy, value win) {
 }
 
 CAMLprim value ml_XStoreName(value dpy, value win, value name) {
+  CAMLparam3(dpy, win, name);
   GET_STATUS XStoreName(Display_val(dpy), Window_val(win), String_val(name));
   CHECK_STATUS(XStoreName, 1);
-  return Val_unit;
+  CAMLreturn(Val_unit);
 }
 
 CAMLprim value ml_XFetchName(value dpy, value win) {
@@ -1521,7 +1534,7 @@ CAMLprim value ml_XInternAtoms(value dpy, value ml_names,
   atoms_return = malloc(count * sizeof(Atom));
   names = malloc(count * sizeof(char *));
   for (i = 0; i < count; ++i) {
-    names[i] = String_val(Field(ml_names, i));
+    names[i] = (char *)String_val(Field(ml_names, i));
   }
   Status st = XInternAtoms(Display_val(dpy), names, count,
                            Bool_val(only_if_exists), atoms_return);
@@ -1677,7 +1690,7 @@ CAMLprim value ml_XSetStandardProperties(value dpy, value win,
   for (i = 0; i < argc; i++) {
     value ml_arg = Field(ml_argv, i);
     int len = caml_string_length(ml_arg);
-    char *arg = String_val(ml_arg);
+    char *arg = (char *)String_val(ml_arg);
     argv[i] = malloc((len + 1) * sizeof(char));
     strncpy(argv[i], arg, len);
     argv[i][len] = '\0';
@@ -2626,7 +2639,7 @@ CAMLprim value ml_XImage_data_str(value ximage) {
   unsigned long size = /* xim->width * */ xim->height * xim->bytes_per_line;
   void *data_ptr = (void *)(&(xim->data[0]));
   ml_data = caml_alloc_string(size);
-  memcpy(String_val(ml_data), data_ptr, size);
+  memcpy((char *)String_val(ml_data), data_ptr, size);
   CAMLreturn(ml_data);
 }
 
@@ -2695,7 +2708,7 @@ CAMLprim value ml_XSetFontPath(value dpy, value ml_directories) {
   ndirs = Wosize_val(ml_directories);
   directories = malloc(ndirs * sizeof(char *));
   for (i = 0; i < ndirs; i++) {
-    directories[i] = String_val(Field(ml_directories, i));
+    directories[i] = (char *)String_val(Field(ml_directories, i));
   }
   GET_STATUS XSetFontPath(Display_val(dpy), directories, ndirs);
   free(directories);
@@ -2963,14 +2976,15 @@ static const unsigned int logical_state_mask_table[] = {
     Button5Mask, ShiftMask,   LockMask,    ControlMask, Mod1Mask,
     Mod2Mask,    Mod3Mask,    Mod4Mask,    Mod5Mask};
 // define State_mask_val(i) (logical_state_mask_table[Long_val(i)])
-static unsigned int State_mask_val(li) {
+static unsigned int State_mask_val(value li) {
+  CAMLparam1(li);
   int c_mask = 0;
   while (li != Val_emptylist) {
     value head = Field(li, 0);
     c_mask |= logical_state_mask_table[Long_val(head)];
     li = Field(li, 1);
   }
-  return c_mask;
+  CAMLreturnT(unsigned int, c_mask);
 }
 
 #define Val_AnyModifier Val_int(0)
@@ -3354,7 +3368,7 @@ CAMLprim value ml_XKeymapEvent_datas(value event) {
     caml_invalid_argument("not a KeymapNotify event");
 #endif
   key_str = caml_alloc_string(32);
-  memcpy(String_val(key_str), (e->xkeymap.key_vector), 32);
+  memcpy((char *)String_val(key_str), (e->xkeymap.key_vector), 32);
 
   dat = caml_alloc(1, 0);
   Store_field(dat, 0, key_str);
@@ -3955,8 +3969,8 @@ CAMLprim value ml_XLookupString(value event, value buffer) {
 #endif
   // XComposeStatus stat;
   int nchars = XLookupString( // from <X11/Xutil.h>
-      &(e->xkey), String_val(buffer), caml_string_length(buffer), &keysym,
-      NULL /* &stat */);
+      &(e->xkey), (char *)String_val(buffer), caml_string_length(buffer),
+      &keysym, NULL /* &stat */);
   ret = caml_alloc(2, 0);
   Store_field(ret, 0, Val_int(nchars));
   Store_field(ret, 1, Val_keysym(keysym));
@@ -4152,7 +4166,7 @@ CAMLprim value ml_XQueryKeymap(value dpy) {
   CAMLlocal1(ml_keys);
   ml_keys = caml_alloc_string(32);
   char *keys_ptr;
-  keys_ptr = String_val(ml_keys);
+  keys_ptr = (char *)String_val(ml_keys);
   GET_STATUS XQueryKeymap(Display_val(dpy), keys_ptr);
   CHECK_STATUS(XQueryKeymap, 1);
   CAMLreturn(ml_keys);
@@ -4196,7 +4210,7 @@ CAMLprim value ml_XGetKeyboardControl(value dpy) {
   CHECK_STATUS(XGetKeyboardControl, 1);
   tpl = caml_alloc(7, 0);
   ml_auto_repeats = caml_alloc_string(32);
-  memcpy(String_val(ml_auto_repeats), kbs.auto_repeats, 32);
+  memcpy((char *)String_val(ml_auto_repeats), kbs.auto_repeats, 32);
   Store_field(tpl, 0, Val_int(kbs.key_click_percent));
   Store_field(tpl, 1, Val_int(kbs.bell_percent));
   Store_field(tpl, 2, Val_uint(kbs.bell_pitch));

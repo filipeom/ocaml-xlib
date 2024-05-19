@@ -14,7 +14,7 @@ static inline value Val_Display(Display *dpy) {
   ml_dpy = caml_alloc(2, 0);
   Store_field(ml_dpy, 0, ((value)(dpy)));
   Store_field(ml_dpy, 1, Val_true);
-  CAMLreturn(ml_dpy);
+  return ml_dpy;
 }
 
 #define display_record_closed(dpy) Store_field((dpy), 1, Val_false)

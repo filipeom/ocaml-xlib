@@ -86,7 +86,7 @@ external xOpenDisplay : name:string -> display = "ml_XOpenDisplay"
 
 val open_display : ?name:string -> unit -> display
 
-external xCloseDisplay : dpy:display -> unit = "ml_XCloseDisplay"
+external xCloseDisplay : display -> unit = "ml_XCloseDisplay"
 (** {{:http://tronche.com/gui/x/xlib/display/XCloseDisplay.html}man} *)
 
 external xFlush : dpy:display -> unit = "ml_XFlush"

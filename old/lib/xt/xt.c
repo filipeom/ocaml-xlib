@@ -97,7 +97,7 @@ CAMLprim value ml_XtOpenApplication(value application_class,
   app_resources = calloc(Wosize_val(ml_app_resources) + 1, sizeof(String *));
   int i;
   for (i = 0; i < Wosize_val(ml_app_resources); ++i)
-    app_resources[i] = String_val(Field(ml_app_resources, i));
+    app_resources[i] = (char *) String_val(Field(ml_app_resources, i));
   app_resources[i] = NULL;
 
   Widget window = XtOpenApplication(

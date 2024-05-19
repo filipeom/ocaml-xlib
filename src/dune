@@ -1,7 +1,7 @@
 (library
- (public_name x11.xlib)
- (name xlib)
+ (public_name x11)
+ (name x11)
  (foreign_stubs
   (language c)
-  (names xlib))
+  (names xlib_stubs))
  (c_library_flags :standard -lX11))
