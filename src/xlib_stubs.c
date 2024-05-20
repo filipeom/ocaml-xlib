@@ -28,7 +28,13 @@ static value alloc_display(Display *dpy) {
   return v;
 }
 
-CAMLprim value caml_x11_xOpenDisplay(value display_name) {
+static value alloc_window(Window win) {
+  value v = caml_alloc_custom(&xlib_window_ops, sizeof(Window *), 0, 1);
+  Window_val(v) = win;
+  return v;
+}
+
+CAMLprim value caml_x11_XOpenDisplay(value display_name) {
   CAMLparam1(display_name);
   Display *dpy = XOpenDisplay(String_val(display_name));
   if (dpy == NULL)
@@ -36,30 +42,36 @@ CAMLprim value caml_x11_xOpenDisplay(value display_name) {
   CAMLreturn(alloc_display(dpy));
 }
 
-CAMLprim value caml_x11_xCloseDisplay(value display) {
+CAMLprim value caml_x11_XDefaultRootWindow(value display) {
+  CAMLparam1(display);
+  CAMLreturn(alloc_window(XDefaultRootWindow(Display_val(display))));
+}
+
+CAMLprim value caml_x11_XNoOp(value display) {
+  CAMLparam1(display);
+  XNoOp(Display_val(display));
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value caml_x11_XCloseDisplay(value display) {
   CAMLparam1(display);
   XCloseDisplay(Display_val(display));
   CAMLreturn(Val_unit);
 }
 
-CAMLprim value caml_x11_xSync(value display, value discard) {
+CAMLprim value caml_x11_XSetCloseDownMode(value display, value mode) {
+  CAMLparam2(display, mode);
+  XSetCloseDownMode(Display_val(display), Val_int(mode));
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value caml_x11_XSync(value display, value discard) {
   CAMLparam2(display, discard);
   XSync(Display_val(display), Bool_val(discard));
   CAMLreturn(Val_unit);
 }
 
-static value alloc_window(Window win) {
-  value v = caml_alloc_custom(&xlib_window_ops, sizeof(Window *), 0, 1);
-  Window_val(v) = win;
-  return v;
-}
-
-CAMLprim value caml_x11_xDefaultRootWindow(value display) {
-  CAMLparam1(display);
-  CAMLreturn(alloc_window(DefaultRootWindow(Display_val(display))));
-}
-
-CAMLprim value caml_x11_xStoreName(value display, value win, value name) {
+CAMLprim value caml_x11_XStoreName(value display, value win, value name) {
   CAMLparam3(display, win, name);
   XStoreName(Display_val(display), Window_val(win), String_val(name));
   CAMLreturn(Val_unit);

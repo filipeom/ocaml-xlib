@@ -1,4 +1,4 @@
 (executable
  (name double_buffer)
  (modules double_buffer)
- (libraries x11.xlib))
+ (libraries xlib))

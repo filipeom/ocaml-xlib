@@ -1,6 +1,6 @@
 (library
- (public_name x11)
- (name x11)
+ (public_name xlib)
+ (name xlib)
  (foreign_stubs
   (language c)
   (names xlib_stubs))

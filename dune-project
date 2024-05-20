@@ -1,6 +1,6 @@
 (lang dune 3.10)
 
-(name x11)
+(name xlib)
 
 (generate_opam_files true)
 
@@ -16,7 +16,7 @@
 (license "MIT")
 
 (package
- (name x11)
+ (name xlib)
  (synopsis "Bindings for the X11 library")
  (description "OCaml bindings to the X11 library.")
  (depends
