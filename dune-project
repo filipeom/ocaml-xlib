@@ -7,11 +7,11 @@
 (source
  (github filipeom/ocaml-xlib))
 
-(authors "Florent Monnier")
+(authors "Filipe Marques")
 
 (maintainers "Filipe Marques")
 
-(documentation "http://decapode314.free.fr/ocaml/Xlib/doc/")
+(documentation "https://github.com/filipeom/ocaml-xlib")
 
 (license "MIT")
 

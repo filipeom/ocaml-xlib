@@ -3,10 +3,10 @@ opam-version: "2.0"
 synopsis: "Bindings for the X11 library"
 description: "OCaml bindings to the X11 library."
 maintainer: ["Filipe Marques"]
-authors: ["Florent Monnier"]
+authors: ["Filipe Marques"]
 license: "MIT"
 homepage: "https://github.com/filipeom/ocaml-xlib"
-doc: "http://decapode314.free.fr/ocaml/Xlib/doc/"
+doc: "https://github.com/filipeom/ocaml-xlib"
 bug-reports: "https://github.com/filipeom/ocaml-xlib/issues"
 depends: [
   "dune" {>= "3.10"}
